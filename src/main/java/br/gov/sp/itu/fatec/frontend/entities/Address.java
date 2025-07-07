@@ -1,5 +1,7 @@
 package br.gov.sp.itu.fatec.frontend.entities;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +16,7 @@ import lombok.Setter;
 @Entity
 @EqualsAndHashCode(of = "id")
 @Table(name = "TBL_ADDRESSES")
-public class Address {
+public class Address implements Serializable{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

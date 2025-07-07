@@ -1,5 +1,6 @@
 package br.gov.sp.itu.fatec.frontend.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Entity
 @EqualsAndHashCode(of = "id")
 @Table(name = "TBL_CONTACTS")
-public class Contact {
+public class Contact implements Serializable{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -61,6 +62,6 @@ public class Contact {
       inverseJoinColumns = @JoinColumn(name = "category_id")
   )
   private List<Category> categories;
-  
+
   private String note;
 }
