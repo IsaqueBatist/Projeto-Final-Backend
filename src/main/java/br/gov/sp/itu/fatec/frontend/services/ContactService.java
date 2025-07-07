@@ -61,4 +61,28 @@ public class ContactService {
     public void delete(Long id) {
         contactRepository.deleteById(id);
     }
+
+    public List<Contact> findByNameContainingIgnoreCase(String name) {
+        return contactRepository.findByFirstnameContainingIgnoreCase(name);
+    }
+
+    public List<Contact> findByPhonesNumberContainingIgnoreCase(String partialNumber) {
+        return contactRepository.findByPhones_PhoneNumberContainingIgnoreCase(partialNumber);
+    }
+
+    public List<Contact> findByEmailsEmailContainingIgnoreCase(String partialAddress) {
+        return contactRepository.findByEmails_EmailContainingIgnoreCase(partialAddress);
+    }
+
+    public List<Contact> findByFavorite(boolean favorite) {
+        return contactRepository.findByIsFavorite(favorite);
+    }
+
+    public List<Contact> findByCategoriesNameIgnoreCase(String name) {
+        return contactRepository.findByCategories_NameIgnoreCase(name);
+    }
+
+    public List<Contact> findByGroupNameContainingIgnoreCase(String groupName) {
+        return contactRepository.findByGroups_NameContainingIgnoreCase(groupName);
+    }
 }

@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sp.itu.fatec.frontend.entities.Contact;
 import br.gov.sp.itu.fatec.frontend.services.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Contatos", description = "Operações com contatos")
@@ -68,4 +70,58 @@ public class ContactController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Buscar contatos por nome (contendo, case-insensitive)")
+    @GetMapping("/search/by-name")
+    public ResponseEntity<List<Contact>> findByName(
+        @Parameter(description = "Parte do nome a buscar", example = "joao")
+        @RequestParam String name) {
+        List<Contact> contacts = service.findByNameContainingIgnoreCase(name);
+        return ResponseEntity.ok(contacts);
+    }
+
+    @Operation(summary = "Buscar contatos por número de telefone (contendo, case-insensitive)")
+    @GetMapping("/search/by-phone")
+    public ResponseEntity<List<Contact>> findByPhone(
+        @Parameter(description = "Parte do número de telefone a buscar", example = "999")
+        @RequestParam String number) {
+        List<Contact> contacts = service.findByPhonesNumberContainingIgnoreCase(number);
+        return ResponseEntity.ok(contacts);
+    }
+
+    @Operation(summary = "Buscar contatos por email (contendo, case-insensitive)")
+    @GetMapping("/search/by-email")
+    public ResponseEntity<List<Contact>> findByEmail(
+        @Parameter(description = "Parte do email a buscar", example = "email@exemplo.com")
+        @RequestParam String email) {
+        List<Contact> contacts = service.findByEmailsEmailContainingIgnoreCase(email);
+        return ResponseEntity.ok(contacts);
+    }
+
+    @Operation(summary = "Buscar contatos favoritos ou não")
+    @GetMapping("/search/by-favorite")
+    public ResponseEntity<List<Contact>> findByFavorite(
+        @Parameter(description = "Buscar contatos favoritos? true ou false", example = "true")
+        @RequestParam boolean favorite) {
+        List<Contact> contacts = service.findByFavorite(favorite);
+        return ResponseEntity.ok(contacts);
+    }
+
+    @Operation(summary = "Buscar contatos por nome de categoria (case-insensitive)")
+    @GetMapping("/search/by-category")
+    public ResponseEntity<List<Contact>> findByCategory(
+        @Parameter(description = "Nome da categoria", example = "Amigos")
+        @RequestParam String categoryName) {
+        List<Contact> contacts = service.findByCategoriesNameIgnoreCase(categoryName);
+        return ResponseEntity.ok(contacts);
+    }
+
+    @Operation(summary = "Buscar contatos por nome de grupo (contendo, case-insensitive)")
+    @GetMapping("/search/by-group")
+    public ResponseEntity<List<Contact>> findByGroup(
+    @Parameter(description = "Parte do nome do grupo a buscar", example = "Família")
+    @RequestParam String groupName) {
+    List<Contact> contacts = service.findByGroupNameContainingIgnoreCase(groupName);
+    return ResponseEntity.ok(contacts);
+}
 }
