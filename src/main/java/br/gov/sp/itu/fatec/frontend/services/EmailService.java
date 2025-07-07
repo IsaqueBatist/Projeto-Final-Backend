@@ -1,5 +1,6 @@
 package br.gov.sp.itu.fatec.frontend.services;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,17 @@ public class EmailService {
     return emailRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Email not found"));
   }
 
+  public List<Email> findAll(){
+    return emailRepository.findAll();
+  }
+
   //Criar um novo email
   public void createEmail(Email email){
     emailRepository.save(email);
+  }
+
+  public Email save(Email email){
+    return emailRepository.save(email);
   }
 
   //Editar um email
