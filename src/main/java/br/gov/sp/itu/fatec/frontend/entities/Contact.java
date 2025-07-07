@@ -3,6 +3,17 @@ package br.gov.sp.itu.fatec.frontend.entities;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@EqualsAndHashCode(of = "id")
+@Table(name = "TBL_CONTACTS")
 public class Contact {
   private Long id;
   private String firstname;
