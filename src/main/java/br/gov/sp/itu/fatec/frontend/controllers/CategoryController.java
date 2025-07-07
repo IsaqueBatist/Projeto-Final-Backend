@@ -19,44 +19,57 @@ import org.springframework.web.bind.annotation.RestController;
 import br.gov.sp.itu.fatec.frontend.entities.Category;
 import br.gov.sp.itu.fatec.frontend.services.CategoryService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Categorias", description = "Operações de gerenciamento de categorias")
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
 
     @Autowired
-    private CategoryService service;
+    private CategoryService categoryService;
 
+    @Operation(summary = "Listar todas as categorias")
     @GetMapping
     public ResponseEntity<List<Category>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        List<Category> categories = categoryService.findAll();
+        return ResponseEntity.ok(categories);
     }
 
+    @Operation(summary = "Buscar categoria por ID")
     @GetMapping("/{id}")
     public ResponseEntity<Category> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        Category category = categoryService.findById(id);
+        return ResponseEntity.ok(category);
     }
 
+    @Operation(summary = "Criar nova categoria")
     @PostMapping
     public ResponseEntity<Category> create(@RequestBody Category category) {
-        Category saved = service.save(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        Category created = categoryService.save(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Operation(summary = "Atualizar categoria")
     @PutMapping("/{id}")
     public ResponseEntity<Category> update(@PathVariable Long id, @RequestBody Category category) {
         category.setId(id);
-        return ResponseEntity.ok(service.save(category));
+        Category updated = categoryService.save(category);
+        return ResponseEntity.ok(updated);
     }
 
+    @Operation(summary = "Atualização parcial da categoria")
     @PatchMapping("/{id}")
     public ResponseEntity<Void> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
-        service.parcialUpdate(id, fields);
+        categoryService.parcialUpdate(id, fields);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Excluir categoria")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

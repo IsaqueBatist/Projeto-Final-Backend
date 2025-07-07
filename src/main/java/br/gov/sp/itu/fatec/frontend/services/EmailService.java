@@ -16,7 +16,7 @@ public class EmailService {
   private EmailRepository emailRepository;
 
   //Pegar email por id
-  public Email getEmailById(Long id){
+  public Email findById(Long id){
     return emailRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Email not found"));
   }
 
@@ -35,7 +35,7 @@ public class EmailService {
 
   //Editar um email
   public void parcialUpdate(Long id, Map<String, Object> fields){
-    Email email = getEmailById(id);
+    Email email = findById(id);
 
     fields.forEach((field, value) -> {
       switch (field) {
@@ -53,7 +53,7 @@ public class EmailService {
   }
 
   public void delete(Long id){
-    getEmailById(id);
+    findById(id);
     this.emailRepository.deleteById(id);
   }
 }

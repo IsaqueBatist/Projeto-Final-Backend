@@ -18,45 +18,57 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sp.itu.fatec.frontend.entities.Email;
 import br.gov.sp.itu.fatec.frontend.services.EmailService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "E-mails", description = "Operações de gerenciamento de e-mails")
 @RestController
 @RequestMapping("/emails")
 public class EmailController {
 
     @Autowired
-    private EmailService service;
+    private EmailService emailService;
 
+    @Operation(summary = "Listar todos os e-mails")
     @GetMapping
     public ResponseEntity<List<Email>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        List<Email> emails = emailService.findAll();
+        return ResponseEntity.ok(emails);
     }
 
+    @Operation(summary = "Buscar e-mail por ID")
     @GetMapping("/{id}")
     public ResponseEntity<Email> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getEmailById(id));
+        Email email = emailService.findById(id);
+        return ResponseEntity.ok(email);
     }
 
+    @Operation(summary = "Criar novo e-mail")
     @PostMapping
     public ResponseEntity<Email> create(@RequestBody Email email) {
-        Email saved = service.save(email);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        Email created = emailService.save(email);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Operation(summary = "Atualizar e-mail")
     @PutMapping("/{id}")
     public ResponseEntity<Email> update(@PathVariable Long id, @RequestBody Email email) {
         email.setId(id);
-        return ResponseEntity.ok(service.save(email));
+        Email updated = emailService.save(email);
+        return ResponseEntity.ok(updated);
     }
 
+    @Operation(summary = "Atualização parcial do e-mail")
     @PatchMapping("/{id}")
     public ResponseEntity<Void> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
-        service.parcialUpdate(id, fields);
+        emailService.parcialUpdate(id, fields);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Excluir e-mail")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        emailService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

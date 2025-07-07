@@ -18,45 +18,57 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sp.itu.fatec.frontend.entities.Phone;
 import br.gov.sp.itu.fatec.frontend.services.PhoneService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Telefones", description = "Operações de gerenciamento de telefones")
 @RestController
 @RequestMapping("/phones")
 public class PhoneController {
 
     @Autowired
-    private PhoneService service;
+    private PhoneService phoneService;
 
+    @Operation(summary = "Listar todos os telefones")
     @GetMapping
     public ResponseEntity<List<Phone>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        List<Phone> phones = phoneService.findAll();
+        return ResponseEntity.ok(phones);
     }
 
+    @Operation(summary = "Buscar telefone por ID")
     @GetMapping("/{id}")
     public ResponseEntity<Phone> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        Phone phone = phoneService.findById(id);
+        return ResponseEntity.ok(phone);
     }
 
+    @Operation(summary = "Criar novo telefone")
     @PostMapping
     public ResponseEntity<Phone> create(@RequestBody Phone phone) {
-        Phone saved = service.save(phone);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        Phone created = phoneService.save(phone);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Operation(summary = "Atualizar telefone")
     @PutMapping("/{id}")
     public ResponseEntity<Phone> update(@PathVariable Long id, @RequestBody Phone phone) {
         phone.setId(id);
-        return ResponseEntity.ok(service.save(phone));
+        Phone updated = phoneService.save(phone);
+        return ResponseEntity.ok(updated);
     }
 
+    @Operation(summary = "Atualização parcial do telefone")
     @PatchMapping("/{id}")
     public ResponseEntity<Void> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
-        service.parcialUpdate(id, fields);
+        phoneService.parcialUpdate(id, fields);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Excluir telefone")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        phoneService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

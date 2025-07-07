@@ -18,45 +18,57 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sp.itu.fatec.frontend.entities.Address;
 import br.gov.sp.itu.fatec.frontend.services.AddressService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Endereços", description = "Operações de gerenciamento de endereços")
 @RestController
 @RequestMapping("/addresses")
 public class AddressController {
 
     @Autowired
-    private AddressService service;
+    private AddressService addressService;
 
+    @Operation(summary = "Listar todos os endereços")
     @GetMapping
     public ResponseEntity<List<Address>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        List<Address> addresses = addressService.findAll();
+        return ResponseEntity.ok(addresses);
     }
 
+    @Operation(summary = "Buscar endereço por ID")
     @GetMapping("/{id}")
     public ResponseEntity<Address> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        Address address = addressService.findById(id);
+        return ResponseEntity.ok(address);
     }
 
+    @Operation(summary = "Criar novo endereço")
     @PostMapping
     public ResponseEntity<Address> create(@RequestBody Address address) {
-        Address saved = service.save(address);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        Address created = addressService.save(address);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Operation(summary = "Atualizar endereço")
     @PutMapping("/{id}")
     public ResponseEntity<Address> update(@PathVariable Long id, @RequestBody Address address) {
         address.setId(id);
-        return ResponseEntity.ok(service.save(address));
+        Address updated = addressService.save(address);
+        return ResponseEntity.ok(updated);
     }
 
+    @Operation(summary = "Atualização parcial do endereço")
     @PatchMapping("/{id}")
     public ResponseEntity<Void> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
-        service.parcialUpdate(id, fields);
+        addressService.parcialUpdate(id, fields);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Excluir endereço")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        addressService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
