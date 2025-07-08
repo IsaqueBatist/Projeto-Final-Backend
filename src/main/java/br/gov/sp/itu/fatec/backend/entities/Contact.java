@@ -66,8 +66,4 @@ public class Contact implements Serializable{
   private List<Category> categories;
 
   private String note;
-
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "photo_id")
-  private Photo photo;
 }

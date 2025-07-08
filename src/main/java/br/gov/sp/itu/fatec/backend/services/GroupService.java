@@ -30,7 +30,12 @@ public class GroupService {
     }
 
     public Group save(Group group) {
-        return groupRepository.save(group);
+        if (!groupRepository.existsByName(group.getName())) {
+            return groupRepository.save(group);
+        }else{
+            Group existing = groupRepository.findByName(group.getName());
+            return existing;
+        }
     }
 
     public void parcialUpdate(Long id, Map<String, Object> fields) {
