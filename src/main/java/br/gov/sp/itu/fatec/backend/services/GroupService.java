@@ -6,14 +6,19 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.gov.sp.itu.fatec.backend.entities.Contact;
 import br.gov.sp.itu.fatec.backend.entities.Group;
 import br.gov.sp.itu.fatec.backend.expections.EntityFoundException;
+import br.gov.sp.itu.fatec.backend.repositories.ContactRepository;
 import br.gov.sp.itu.fatec.backend.repositories.GroupRepository;
 
 @Service
 public class GroupService {
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private ContactRepository contactRepository;
 
     public List<Group> findAll() {
         return groupRepository.findAll();
@@ -44,8 +49,16 @@ public class GroupService {
     groupRepository.save(group);
 }
 
+        public void delete(Long id) {
+        Group group = findById(id);
 
-    public void delete(Long id) {
+        List<Contact> contacts = contactRepository.findByGroups_NameContainingIgnoreCase(group.getName());
+        if(!contacts.isEmpty()){
+            contacts.forEach((c) -> {
+                c.getGroups().remove(group);
+            });
+        }
+
         groupRepository.deleteById(id);
     }
 }

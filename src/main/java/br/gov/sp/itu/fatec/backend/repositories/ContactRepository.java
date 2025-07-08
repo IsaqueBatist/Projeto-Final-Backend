@@ -18,7 +18,11 @@ public interface ContactRepository extends JpaRepository<Contact, Long>{
     List<Contact> findByIsFavorite(boolean favorite);
 
     List<Contact> findByCategories_NameIgnoreCase(String name);
+    
+    List<Contact> findByCategories_Id(Long id);
 
     List<Contact> findByGroups_NameContainingIgnoreCase(String name);
+
+    List<Contact> findByGroups_Id(Long name);
 
 }

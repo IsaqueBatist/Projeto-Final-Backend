@@ -10,11 +10,14 @@ import br.gov.sp.itu.fatec.backend.entities.Photo;
 import br.gov.sp.itu.fatec.backend.services.PhotoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Tag(name = "Fotos", description = "Operaçoes de gerenciamento de Fotos")
 @RestController
+@CrossOrigin
 @RequestMapping("/photo")
 public class PhotoController {
   @Autowired

@@ -7,14 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.gov.sp.itu.fatec.backend.entities.Category;
+import br.gov.sp.itu.fatec.backend.entities.Contact;
 import br.gov.sp.itu.fatec.backend.expections.EntityFoundException;
 import br.gov.sp.itu.fatec.backend.expections.InvalidFieldException;
 import br.gov.sp.itu.fatec.backend.repositories.CategoryRepository;
+import br.gov.sp.itu.fatec.backend.repositories.ContactRepository;
 
 @Service
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ContactRepository contactRepository;
 
     public List<Category> findAll() {
         return categoryRepository.findAll();
@@ -46,6 +51,15 @@ public class CategoryService {
 
 
     public void delete(Long id) {
+        Category category = findById(id);
+
+        List<Contact> contacts = contactRepository.findByCategories_NameIgnoreCase(category.getName());
+        if(!contacts.isEmpty()){
+            contacts.forEach((c) -> {
+                c.getCategories().remove(category);
+            });
+        }
+
         categoryRepository.deleteById(id);
     }
 }
