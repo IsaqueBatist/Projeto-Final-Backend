@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.gov.sp.itu.fatec.backend.entities.Contact;
 import br.gov.sp.itu.fatec.backend.services.ContactService;
@@ -47,16 +49,28 @@ public class ContactController {
 
     @Operation(summary = "Criar um novo contato")
     @PostMapping
-    public ResponseEntity<Contact> create(@RequestBody Contact contact) {
-        Contact saved = service.save(contact);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<?> create(@RequestPart Contact contact, @RequestPart MultipartFile imageFile) {
+
+        try{
+            Contact saved = service.save(contact, imageFile);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
     }
 
     @Operation(summary = "Atualizar um contato completamente")
     @PutMapping("/{id}")
-    public ResponseEntity<Contact> update(@PathVariable Long id, @RequestBody Contact contact) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestPart Contact contact, @RequestPart MultipartFile imageFile) {
         contact.setId(id);
-        return ResponseEntity.ok(service.save(contact));
+        try{
+            Contact updateContact = service.save(contact, imageFile);
+            return ResponseEntity.ok(updateContact);
+        }catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
     }
 
     @Operation(summary = "Atualização parcial do contato")

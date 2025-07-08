@@ -1,5 +1,6 @@
 package br.gov.sp.itu.fatec.backend.services;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.gov.sp.itu.fatec.backend.entities.Contact;
 import br.gov.sp.itu.fatec.backend.expections.EntityFoundException;
@@ -26,7 +28,10 @@ public class ContactService {
                 .orElseThrow(() -> new EntityFoundException("Contact not found"));
     }
 
-    public Contact save(Contact contact) {
+    public Contact save(Contact contact, MultipartFile imageFile) throws IOException {
+        contact.setImageName(imageFile.getName());
+        contact.setImageType(imageFile.getContentType());
+        contact.setImageDate(imageFile.getBytes());
         return contactRepository.save(contact);
     }
 
@@ -86,4 +91,6 @@ public class ContactService {
     public List<Contact> findByGroupNameContainingIgnoreCase(String groupName) {
         return contactRepository.findByGroups_NameContainingIgnoreCase(groupName);
     }
+
+
 }
