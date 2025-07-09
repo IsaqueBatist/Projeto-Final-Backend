@@ -55,6 +55,9 @@ public class AddressService {
         case "postalCode":
             address.setPostalCode((String) value);
             break;
+        case "street":
+            address.setStreet((String) value);
+                break;
         default:
             throw new InvalidFieldException("Field not valid: " + field);
         }

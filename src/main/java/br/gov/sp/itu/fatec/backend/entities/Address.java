@@ -22,6 +22,7 @@ public class Address implements Serializable{
   private Long id;
   private String number;
   private String complement;
+  private String street;
   private String neighborhood;
   private String city;
   private String state;

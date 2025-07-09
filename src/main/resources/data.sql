@@ -1,12 +1,12 @@
 -- GRUPOS
-INSERT INTO TBL_GROUPS (id, name) VALUES (1, 'Amigos');
-INSERT INTO TBL_GROUPS (id, name) VALUES (2, 'Trabalho');
-INSERT INTO TBL_GROUPS (id, name) VALUES (3, 'Família');
+INSERT INTO TBL_GROUPS ( name) VALUES ( 'Amigos');
+INSERT INTO TBL_GROUPS ( name) VALUES ( 'Trabalho');
+INSERT INTO TBL_GROUPS ( name) VALUES ( 'Família');
 
 -- CATEGORIAS
-INSERT INTO TBL_CATEGORIES (id, name) VALUES (1, 'Importante');
-INSERT INTO TBL_CATEGORIES (id, name) VALUES (2, 'Contato Novo');
-INSERT INTO TBL_CATEGORIES (id, name) VALUES (3, 'Cliente');
+INSERT INTO TBL_CATEGORIES ( name) VALUES ( 'Importante');
+INSERT INTO TBL_CATEGORIES ( name) VALUES ( 'Contato Novo');
+INSERT INTO TBL_CATEGORIES ( name) VALUES ( 'Cliente');
 
 -- CONTATOS
 INSERT INTO TBL_CONTACTS ( firstname, lastname, birth_date, note, is_favorite) VALUES
@@ -29,10 +29,10 @@ INSERT INTO TBL_PHONES ( label, phone_number, contact_id) VALUES
   ( 'celular', '(11) 97777-4567', 3);
 
 -- ENDEREÇOS
-INSERT INTO TBL_ADDRESSES ( number, complement, neighborhood, city, state, country, postal_code, contact_id) VALUES
-  ( '100', 'Apt 12', 'Centro', 'São Paulo', 'SP', 'Brasil', '01000-000', 1),
-  ( '250', '', 'Jardins', 'Rio de Janeiro', 'RJ', 'Brasil', '22000-000', 2),
-  ( '50', 'Casa 3', 'Bela Vista', 'Campinas', 'SP', 'Brasil', '13000-000', 3);
+INSERT INTO TBL_ADDRESSES ( number, complement, street, neighborhood, city, state, country, postal_code, contact_id) VALUES
+  ( '100', 'Apt 12', 'Rua 1', 'Centro', 'São Paulo', 'SP', 'Brasil', '01000-000', 1),
+  ( '250', '', 'Rua 2', 'Jardins', 'Rio de Janeiro', 'RJ', 'Brasil', '22000-000', 2),
+  ( '50', 'Casa 3', 'Rua 3', 'Bela Vista', 'Campinas', 'SP', 'Brasil', '13000-000', 3);
 
 -- RELAÇÃO CONTATO ↔ GRUPO
 INSERT INTO CONTACt_GROUP (contact_id, group_id) VALUES

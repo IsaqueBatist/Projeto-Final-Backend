@@ -67,9 +67,4 @@ public class Contact implements Serializable{
   private List<Category> categories;
 
   private String note;
-
-  private String imageName;
-  private String imageType;
-  @Lob
-  private byte[] imageDate;
 }

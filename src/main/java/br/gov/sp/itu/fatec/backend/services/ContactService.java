@@ -1,23 +1,46 @@
 package br.gov.sp.itu.fatec.backend.services;
 
-import java.io.IOException;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.stream.Collectors;
 import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
+import br.gov.sp.itu.fatec.backend.entities.Address;
+import br.gov.sp.itu.fatec.backend.entities.Category;
 import br.gov.sp.itu.fatec.backend.entities.Contact;
+import br.gov.sp.itu.fatec.backend.entities.Email;
+import br.gov.sp.itu.fatec.backend.entities.Group;
+import br.gov.sp.itu.fatec.backend.entities.Phone;
 import br.gov.sp.itu.fatec.backend.expections.EntityFoundException;
+import br.gov.sp.itu.fatec.backend.repositories.AddressRepository;
+import br.gov.sp.itu.fatec.backend.repositories.CategoryRepository;
 import br.gov.sp.itu.fatec.backend.repositories.ContactRepository;
+import br.gov.sp.itu.fatec.backend.repositories.EmailRepository;
+import br.gov.sp.itu.fatec.backend.repositories.GroupRepository;
+import br.gov.sp.itu.fatec.backend.repositories.PhoneRepository;
 
 @Service
 public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
+
+    @Autowired
+    private EmailRepository emailRepository;
+    
+    @Autowired
+    private PhoneRepository phoneRepository;
+    
+    @Autowired
+    private CategoryRepository categoryRepository;
+    
+    @Autowired
+    private GroupRepository groupRepository;
 
     public List<Contact> findAll() {
         return contactRepository.findAll();
@@ -28,41 +51,9 @@ public class ContactService {
                 .orElseThrow(() -> new EntityFoundException("Contact not found"));
     }
 
-    public Contact save(Contact contact, MultipartFile imageFile) throws IOException {
-        contact.setImageName(imageFile.getName());
-        contact.setImageType(imageFile.getContentType());
-        contact.setImageDate(imageFile.getBytes());
+    public Contact save(Contact contact) {
         return contactRepository.save(contact);
     }
-
-    public void parcialUpdate(Long id, Map<String, Object> fields) {
-        Contact contact = findById(id);
-
-        fields.forEach((field, value) -> {
-        switch (field) {
-            case "firstname":
-                contact.setFirstname((String) value);
-                break;
-            case "lastname":
-                contact.setLastname((String) value);
-                break;
-            case "birthDate":
-                contact.setBirthDate(LocalDate.parse((String) value));
-                break;
-            case "isFavorite":
-                contact.setFavorite((Boolean) value);
-                break;
-            case "note":
-                contact.setNote((String) value);
-                break;
-            default:
-                new InvalidFileNameException("Field not valid ", field);
-        }
-        });
-
-        contactRepository.save(contact);
-    }
-
 
     public void delete(Long id) {
         contactRepository.deleteById(id);

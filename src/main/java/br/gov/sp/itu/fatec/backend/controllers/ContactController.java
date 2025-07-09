@@ -2,7 +2,6 @@ package br.gov.sp.itu.fatec.backend.controllers;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import br.gov.sp.itu.fatec.backend.entities.Contact;
 import br.gov.sp.itu.fatec.backend.services.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,36 +46,22 @@ public class ContactController {
 
     @Operation(summary = "Criar um novo contato")
     @PostMapping
-    public ResponseEntity<?> create(@RequestPart Contact contact, @RequestPart MultipartFile imageFile) {
+    public ResponseEntity<Contact> create(@RequestBody Contact contact) {
 
-        try{
-            Contact saved = service.save(contact, imageFile);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        } catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        
+        Contact saved = service.save(contact);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+
     }
 
     @Operation(summary = "Atualizar um contato completamente")
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestPart Contact contact, @RequestPart MultipartFile imageFile) {
+    public ResponseEntity<Contact> update(@PathVariable Long id, @RequestBody Contact contact) {
         contact.setId(id);
-        try{
-            Contact updateContact = service.save(contact, imageFile);
+            Contact updateContact = service.save(contact);
             return ResponseEntity.ok(updateContact);
-        }catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
         
     }
 
-    @Operation(summary = "Atualização parcial do contato")
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
-        service.parcialUpdate(id, fields);
-        return ResponseEntity.noContent().build();
-    }
 
     @Operation(summary = "Excluir um contato")
     @DeleteMapping("/{id}")
