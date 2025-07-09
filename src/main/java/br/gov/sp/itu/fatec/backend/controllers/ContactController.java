@@ -1,9 +1,11 @@
 package br.gov.sp.itu.fatec.backend.controllers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import br.gov.sp.itu.fatec.backend.entities.Contact;
+import br.gov.sp.itu.fatec.backend.expections.EntityFoundException;
 import br.gov.sp.itu.fatec.backend.services.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -46,20 +51,27 @@ public class ContactController {
 
     @Operation(summary = "Criar um novo contato")
     @PostMapping
-    public ResponseEntity<Contact> create(@RequestBody Contact contact) {
-
-        Contact saved = service.save(contact);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-
+    public ResponseEntity<?> create(
+        @RequestPart("contact") Contact contact,
+        @RequestPart(value = "photo", required = false) MultipartFile photoFile) {
+        
+        try {
+            if (photoFile != null && !photoFile.isEmpty()) {
+                contact.setPhoto(photoFile.getBytes()); 
+            }
+            this.service.save(contact);
+            return new ResponseEntity<>(contact, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Operation(summary = "Atualizar um contato completamente")
     @PutMapping("/{id}")
-    public ResponseEntity<Contact> update(@PathVariable Long id, @RequestBody Contact contact) {
-        contact.setId(id);
-            Contact updateContact = service.save(contact);
+    public ResponseEntity<Contact> update(@PathVariable Long id, @RequestPart("contact") Contact contact, @RequestPart(value= "photo", required = false) MultipartFile photoFile) throws IOException {
+            System.out.println(photoFile);
+            Contact updateContact = service.update(id,contact,photoFile);
             return ResponseEntity.ok(updateContact);
-        
     }
 
 
@@ -120,7 +132,23 @@ public class ContactController {
     public ResponseEntity<List<Contact>> findByGroup(
     @Parameter(description = "Parte do nome do grupo a buscar", example = "Família")
     @RequestParam String groupName) {
-    List<Contact> contacts = service.findByGroupNameContainingIgnoreCase(groupName);
-    return ResponseEntity.ok(contacts);
-}
+        List<Contact> contacts = service.findByGroupNameContainingIgnoreCase(groupName);
+        return ResponseEntity.ok(contacts);
+    }
+
+    @Operation(summary = "Busca a foto de perfil do usuário")
+    @GetMapping("/photo/{id}")
+    public ResponseEntity<?> getFoto(@PathVariable Long id) {
+        Contact contact = service.findById(id);
+        byte[] photo = contact.getPhoto();
+
+        if(photo == null){
+            return new ResponseEntity<>("Photo not found", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(photo);
+    }
+
 }

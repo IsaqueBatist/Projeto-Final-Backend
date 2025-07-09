@@ -1,46 +1,28 @@
 package br.gov.sp.itu.fatec.backend.services;
 
-import java.time.LocalDate;
-import java.util.LinkedHashMap;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import br.gov.sp.itu.fatec.backend.entities.Address;
-import br.gov.sp.itu.fatec.backend.entities.Category;
 import br.gov.sp.itu.fatec.backend.entities.Contact;
 import br.gov.sp.itu.fatec.backend.entities.Email;
-import br.gov.sp.itu.fatec.backend.entities.Group;
 import br.gov.sp.itu.fatec.backend.entities.Phone;
 import br.gov.sp.itu.fatec.backend.expections.EntityFoundException;
-import br.gov.sp.itu.fatec.backend.repositories.AddressRepository;
-import br.gov.sp.itu.fatec.backend.repositories.CategoryRepository;
+
 import br.gov.sp.itu.fatec.backend.repositories.ContactRepository;
-import br.gov.sp.itu.fatec.backend.repositories.EmailRepository;
-import br.gov.sp.itu.fatec.backend.repositories.GroupRepository;
-import br.gov.sp.itu.fatec.backend.repositories.PhoneRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
-
-    @Autowired
-    private AddressRepository addressRepository;
-
-    @Autowired
-    private EmailRepository emailRepository;
-    
-    @Autowired
-    private PhoneRepository phoneRepository;
-    
-    @Autowired
-    private CategoryRepository categoryRepository;
-    
-    @Autowired
-    private GroupRepository groupRepository;
 
     public List<Contact> findAll() {
         return contactRepository.findAll();
@@ -52,8 +34,49 @@ public class ContactService {
     }
 
     public Contact save(Contact contact) {
+
         return contactRepository.save(contact);
     }
+
+public Contact update(Long id, Contact updatedContact, MultipartFile photo) throws IOException {
+    Contact existing = contactRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
+
+    existing.setFirstname(updatedContact.getFirstname());
+    existing.setLastname(updatedContact.getLastname());
+    existing.setFavorite(updatedContact.isFavorite());
+    existing.setNote(updatedContact.getNote());
+    existing.setBirthDate(updatedContact.getBirthDate());
+     // Endereços: limpa e adiciona manualmente
+    existing.getAddresses().clear();
+    for (Address addr : updatedContact.getAddresses()) {
+        existing.getAddresses().add(addr);
+    }
+
+    // Telefones
+    existing.getPhones().clear();
+    for (Phone phone : updatedContact.getPhones()) {
+        existing.getPhones().add(phone);
+    }
+
+    // E-mails
+    existing.getEmails().clear();
+    for (Email email : updatedContact.getEmails()) {
+        existing.getEmails().add(email);
+    }
+
+    existing.setGroups(updatedContact.getGroups());
+    existing.setCategories(updatedContact.getCategories());
+
+
+    if (photo != null && !photo.isEmpty()) {
+        existing.setPhoto(photo.getBytes());
+    }
+
+    return contactRepository.save(existing);
+}
+
+
 
     public void delete(Long id) {
         contactRepository.deleteById(id);

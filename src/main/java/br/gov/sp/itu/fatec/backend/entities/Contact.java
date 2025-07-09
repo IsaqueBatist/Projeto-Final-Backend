@@ -67,4 +67,7 @@ public class Contact implements Serializable{
   private List<Category> categories;
 
   private String note;
+
+  @Lob
+  private byte[] photo;
 }
